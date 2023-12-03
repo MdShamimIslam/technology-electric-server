@@ -52,6 +52,12 @@ async function run() {
       res.send(result);
     });
 
+    app.post("/products", async (req, res) => {
+      const product = req.body;
+      const result = await productCollection.insertOne(product);
+      res.send(result);
+    });
+
     app.put('/products/:id', async(req,res)=>{
       const id = req.params.id;
       const filter = { _id : new ObjectId(id)}
