@@ -22,34 +22,47 @@ async function run() {
   try {
     await client.connect();
 
-    const brandsCollection = client.db("TechDb").collection("brands");
-    const productsCollection = client.db("TechDb").collection("products");
+    const brandCollection = client.db("TechDb").collection("brands");
+    const productCollection = client.db("TechDb").collection("products");
+    const cartCollection = client.db("TechDb").collection("carts");
 
     // brands related apis
     app.get("/brands", async (req, res) => {
-      const result = await brandsCollection.find().toArray();
+      const result = await brandCollection.find().toArray();
       res.send(result);
     });
 
     app.get("/brands/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
-      const result = await brandsCollection.findOne(query);
+      const result = await brandCollection.findOne(query);
       res.send(result);
     });
 
     // products related apis
     app.get("/products", async (req, res) => {
-      const result = await productsCollection.find().toArray();
+      const result = await productCollection.find().toArray();
       res.send(result);
     });
 
     app.get("/products/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
-      const result = await productsCollection.findOne(query);
+      const result = await productCollection.findOne(query);
       res.send(result);
     });
+
+    // carts related apis
+    app.post('/carts',async(req,res)=>{
+      const product = req.body;
+      const result = await cartCollection.insertOne(product);
+      res.send(result);
+    })
+
+    app.get('/carts', async(req,res)=>{
+      const result = await cartCollection.find().toArray();
+      res.send(result);
+    })
 
     await client.db("admin").command({ ping: 1 });
     console.log(
